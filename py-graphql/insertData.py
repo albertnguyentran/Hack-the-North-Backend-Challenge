@@ -21,9 +21,10 @@ def insertData():
 
         conn.commit()
 
+        # grab id of user just added
         cursor.execute('SELECT id FROM users WHERE email = ?', (user['email'],))
         user_id = cursor.fetchone()[0]
-
+        
         for skill in user['skills']:
             cursor.execute('''
                 INSERT INTO skills (user_id, skill, rating)
@@ -31,7 +32,7 @@ def insertData():
             ''', (user_id, skill['skill'], skill['rating']))
             conn.commit()
     
-        conn.close()
+    conn.close()
 
 if __name__ == '__main__':
     insertData()
