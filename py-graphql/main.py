@@ -1,49 +1,58 @@
 from flask import Flask
 from flask_graphql import GraphQLView
-from graphene import Schema, ObjectType, String, Int, List
-import sqlite3
-
-conn = sqlite3.connect('hackers.db')
+from flask_sqlalchemy import SQLAlchemy
+from graphene import ObjectType, String, Schema, List, Int
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///hackers.db'
+db = SQLAlchemy(app)
 
-# Graphene Auto converts camelCase field names: https://docs.graphene-python.org/en/latest/types/schema/
-# GraphQL User Type
+class Skills(db.Model):
+    __tablename__ = 'skills'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    skill = db.Column(db.String)
+    rating = db.Column(db.Integer)
+
+class Users(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    company = db.Column(db.String)
+    email = db.Column(db.String, unique=True)
+    phone = db.Column(db.String)
+    skills = db.relationship('Skills', backref='user', lazy=True)
+
+class SkillType(ObjectType):
+    skill = String()
+    rating = Int()
+
 class UserType(ObjectType):
     id = Int()
     name = String()
     company = String()
     email = String()
     phone = String()
-    skills = List(lambda: SkillType)
-
-class SkillType(ObjectType):
-    id = Int()
-    user_id = Int()
-    skill = String()
-    rating = Int()
+    skills = List(SkillType)
 
 class Query(ObjectType):
-    allUsers = List(UserType)
+    all_users = List(UserType)
+    user_by_id = UserType(id=Int(required=True))
 
-    def resolve_all_users(root, info):
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM users")
-        users = cursor.fetchall()
-        return [UserType(**user) for user in users]
+    def resolve_all_users(self, info):
+        users = Users.query.all()
+        app.logger.info(f"Retrieved {len(users)} users from the database")  # Add this line
+        return users
 
-
-    user = UserType(id=Int(description="User ID", required=True))
-    
-    def resolve_user(root, info, id):
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM users WHERE id=?", (id,))
-        user = cursor.fetchone()
-        return UserType(**user) if user else None
+    def resolve_user_by_id(self, info, id):
+        return Users.query.get(id)
 
 schema = Schema(query=Query)
 
 app.add_url_rule('/graphql', view_func=GraphQLView.as_view('graphql', schema=schema, graphiql=True))
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+
     app.run(debug=True)
