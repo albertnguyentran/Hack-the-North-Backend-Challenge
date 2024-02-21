@@ -4,8 +4,8 @@ import json
 import sqlite3
 
 def insertData():
-    conn = sqlite3.connect('hackers.db')
-    cursor = conn.cursor()
+    # conn = sqlite3.connect('hackers.db')
+    # cursor = conn.cursor()
 
     with open('HTN_2023_BE_Challenge_Data.json') as file:
         data = json.load(file)
@@ -14,6 +14,8 @@ def insertData():
 
     for user in data:
         
+        conn = sqlite3.connect('hackers.db')
+        cursor = conn.cursor()
         cursor.execute('''
             INSERT OR IGNORE INTO users (name, company, email, phone)
             VALUES (?, ?, ?, ?)    
@@ -26,13 +28,14 @@ def insertData():
         user_id = cursor.fetchone()[0]
         
         for skill in user['skills']:
+            print(skill, user_id)
             cursor.execute('''
                 INSERT INTO skills (user_id, skill, rating)
                 VALUES (?, ?, ?)
             ''', (user_id, skill['skill'], skill['rating']))
-            conn.commit()
+        conn.commit()
     
-    conn.close()
+        conn.close()
 
 if __name__ == '__main__':
     insertData()

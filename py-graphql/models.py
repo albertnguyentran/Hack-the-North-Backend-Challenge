@@ -14,4 +14,4 @@ class Users(db.Model):
     company = db.Column(db.String)
     email = db.Column(db.String, unique=True)
     phone = db.Column(db.String)
-    # skills = db.relationship('Skills', backref='user', lazy=True)
+    skills = db.relationship('Skills', backref='user', lazy=True)

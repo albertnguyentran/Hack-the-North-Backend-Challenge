@@ -28,7 +28,8 @@ cursor.execute('''
 ''')
 
 
-cursor.execute('DROP TABLE IF EXISTS test;')
+# cursor.execute('DROP TABLE IF EXISTS users;')
+# cursor.execute('DROP TABLE IF EXISTS skills')
 conn.commit()
 conn.close()
 
