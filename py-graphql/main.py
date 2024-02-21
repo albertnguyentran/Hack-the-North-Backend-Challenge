@@ -2,26 +2,17 @@ from flask import Flask
 from flask_graphql import GraphQLView
 from flask_sqlalchemy import SQLAlchemy
 from graphene import ObjectType, String, Schema, List, Int
+from database import db
+from models import Skills, Users
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///hackers.db'
-db = SQLAlchemy(app)
 
-class Skills(db.Model):
-    __tablename__ = 'skills'
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    skill = db.Column(db.String)
-    rating = db.Column(db.Integer)
+# //// is absolute path, /// is relative. Holy shit this took me so long
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////home/api/hackers.db'
 
-class Users(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    company = db.Column(db.String)
-    email = db.Column(db.String, unique=True)
-    phone = db.Column(db.String)
-    skills = db.relationship('Skills', backref='user', lazy=True)
+# Suppreses warning while tracking modifications
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
 
 class SkillType(ObjectType):
     skill = String()
@@ -51,8 +42,20 @@ schema = Schema(query=Query)
 
 app.add_url_rule('/graphql', view_func=GraphQLView.as_view('graphql', schema=schema, graphiql=True))
 
-if __name__ == '__main__':
+
+@app.route("/")
+def home():
+    details = Users.query.all()
+    test = []
+    for user in details:
+        test.append(user.name)
+    return test
+
+def create_db():
     with app.app_context():
         db.create_all()
-
+        
+if __name__ == '__main__':
+    create_db()
     app.run(debug=True)
+
