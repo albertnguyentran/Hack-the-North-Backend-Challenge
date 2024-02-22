@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from graphene import Field, ObjectType, String, Schema, List, Int, InputObjectType, Mutation
 from database import db
 from models import Skills, Users
-
+from sqlalchemy import func
 
 # https://geekpython.in/connect-sqlite-database-with-flask-app
 app = Flask(__name__)
@@ -36,7 +36,8 @@ class Query(ObjectType):
     # https://chillicream.com/docs/hotchocolate/v12/fetching-data/resolvers
     all_users = List(UserType)
     user_by_id = Field(UserType, id=Int(required=True))
-
+    users_with_skills_range = List(UserType, min_skills=Int(), max_skills=Int())
+    
     # https://docs.graphene-python.org/en/latest/types/objecttypes/
     # Resolvers are lazily executed, so if a field is not included in a query, its resolver will not be executed!
     def resolve_all_users(self, info):
@@ -49,7 +50,28 @@ class Query(ObjectType):
         if not user:
             raise ValueError("User ID not found in database")
 
-        return Users.query.get(id)
+        return user
+
+    # Set default values to allow user to only query with a min/max input
+    def resolve_users_with_skills_range(self, info, min_skills=0, max_skills=float('inf')):
+        # https://stackoverflow.com/questions/70455163/count-subquery-in-sqlalchemy
+        
+        # For all rows in the Skills table (Skills.id can be replaced with any non-null values to acheive the same effect),
+        # Count the amount of skills for each user,
+        # And label the result
+        skill_frequency_subquery = db.session.query(func.count(Skills.id)) \
+            .filter(Skills.user_id == Users.id) \
+            .label('skill_count')
+
+        # For all users
+        # Specified by their id,
+        # Filter them by how many skills they have correlated from the subquery
+        users = Users.query \
+            .group_by(Users.id) \
+            .having(skill_frequency_subquery.between(min_skills, max_skills)) \
+            .all()
+        
+        return users
 
 # https://docs.graphene-python.org/en/latest/types/mutations/
 class UpdateSkillInput(InputObjectType):
@@ -76,13 +98,13 @@ class UpdateUserMutation(Mutation):
         if not user:
             raise ValueError("User ID not found in database")
 
-        # iterate through input_data
         for key, value in input_data.items():
 
             # name, company, email, phone
             if key != 'skills':
                 setattr(user, key, value)
-            else:
+
+            else: # Note: If a user has new skills, these skills should be added to the database. Any existing skills should have their ratings updated.
                 for skill in value:
                     skill_name = skill.get('skill')
                     skill_rating = skill.get('rating')
