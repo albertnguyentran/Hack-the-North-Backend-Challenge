@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project sets up the database and the four endpoints using Flask, GraphQL and sqlite
+This project sets up the database and the four endpoints using Flask, GraphQL and SQLite as per the requirements. I chose this stack because I have the least amount of experience with it and I presume Hack the North uses it (or something close), so I wanted to demonstrate my ability to learn and build something new!
 
 ## Structure
 
@@ -24,7 +24,7 @@ This project sets up the database and the four endpoints using Flask, GraphQL an
 
 * Seperated the skills of each user into a skills table with the same user_id
 * Identified user by user_id for the mutation endpoint
-* Users by Skill Range endpoint returns the user itself and not just their name and frequency of skills
+* The Users by Skill Range endpoint returns the user(s) themselves and not just their name and frequency of skills
 
 ## Demo
 
@@ -44,6 +44,12 @@ https://github.com/albertnguyentran/Hack-the-North-Backend-Challenge/assets/7933
 
 https://github.com/albertnguyentran/Hack-the-North-Backend-Challenge/assets/79335098/2c749798-eaab-478c-a051-a64e58ff1487
 
+
+## Next Steps and Future Considerations
+
+1. Unit testing (working on it rn)
+2. Given data about the users location, write an endpoint that determines how much reimbursement they are eligible for
+3. Given data about the users workshop preferences, determine scheduling to avoid the least amount of conflictions
 
 
 
