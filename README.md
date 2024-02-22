@@ -12,7 +12,7 @@ This project sets up the database and the four endpoints using Flask, GraphQL an
     3. database.py - creates an instance of the database
     4. models.py - define models for each table
 
-2. Endpoints:
+2. Endpoints (main.py):
     1. Queries:
         1. All users
         2. User By ID
