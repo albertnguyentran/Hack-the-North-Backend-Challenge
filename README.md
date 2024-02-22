@@ -40,6 +40,11 @@ https://github.com/albertnguyentran/Hack-the-North-Backend-Challenge/assets/7933
 
 https://github.com/albertnguyentran/Hack-the-North-Backend-Challenge/assets/79335098/1006969f-36b3-4011-bea3-6745d592f62f
 
+**Update User Endpoint:**
+
+https://github.com/albertnguyentran/Hack-the-North-Backend-Challenge/assets/79335098/19335e30-75c9-4256-b424-af2e65e6ff53
+
+
 **Users By Skill Range Endpoint:**
 
 https://github.com/albertnguyentran/Hack-the-North-Backend-Challenge/assets/79335098/2c749798-eaab-478c-a051-a64e58ff1487
