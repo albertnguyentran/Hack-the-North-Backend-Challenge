@@ -29,16 +29,20 @@ This project sets up the database and the four endpoints using Flask, GraphQL an
 ## Demo
 
 **Database Demo:**
+
 https://github.com/albertnguyentran/Hack-the-North-Backend-Challenge/assets/79335098/7138a848-4d41-4503-8245-ba5e8440ad4a
 
 **All Users Endpoint:**
+
 https://github.com/albertnguyentran/Hack-the-North-Backend-Challenge/assets/79335098/870e997c-f33c-4f8b-84e4-0446e60e38e5
 
 **User By ID Endpoint:**
+
 https://github.com/albertnguyentran/Hack-the-North-Backend-Challenge/assets/79335098/1006969f-36b3-4011-bea3-6745d592f62f
 
 **Users By Skill Range Endpoint:**
-https://github.com/albertnguyentran/Hack-the-North-Backend-Challenge/assets/79335098/ff8bd67c-d26d-4725-bb6b-6ec987f5080c
+
+https://github.com/albertnguyentran/Hack-the-North-Backend-Challenge/assets/79335098/2c749798-eaab-478c-a051-a64e58ff1487
 
 
 
