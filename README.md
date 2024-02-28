@@ -1,5 +1,7 @@
 # Hack the North Backend Challenge
 
+Feb 22, 2024
+
 ## Overview
 
 This project sets up the database and the four endpoints using Flask, GraphQL and SQLite as per the requirements. I chose this stack because I have the least amount of experience with it as opposed to the other options, so I want to show the team I can learn quickly and build something new :)
